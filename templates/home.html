@@ -2,11 +2,22 @@
 {% block content %}
     <form method="POST" enctype="multipart/form-data">
         <input type="file" name="image" accept="image/*" required>
+        <br>
         <button type="submit">Upload Image</button>
     </form>
 
     {% if uploaded_image %}
-        <h2>Uploaded Image:</h2>
-        <img src="{{ uploaded_image }}" width="400">
+        <h3>Uploaded Image:</h3>
+        <img src="{{ uploaded_image }}">
+        <form method="POST" action="/enhance">
+            <input type="hidden" name="image_path" value="{{ uploaded_image }}">
+            <br>
+            <button type="submit">Enhance Image</button>
+        </form>
+    {% endif %}
+
+    {% if enhanced_image %}
+        <h3>Enhanced Image:</h3>
+        <img src="{{ enhanced_image }}">
     {% endif %}
 {% endblock %}
