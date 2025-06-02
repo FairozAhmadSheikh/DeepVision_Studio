@@ -40,3 +40,16 @@ def blend_images(img1_path, img2_path):
         cols, rows, ch = la.shape
         ls = np.hstack((la[:, 0:int(cols/2)], lb[:, int(cols/2):]))
         LS.append(ls)
+    # Reconstruct
+    blended = LS[0]
+    for i in range(1, 6):
+        blended = cv2.pyrUp(blended)
+        blended = cv2.add(blended, LS[i])
+
+    # Save result
+    filename = f"blended_{os.path.basename(img1_path)}_{os.path.basename(img2_path)}"
+    output_path = os.path.join("static", "uploads", "blended", filename)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    cv2.imwrite(output_path, blended)
+
+    return output_path
