@@ -34,3 +34,9 @@ def blend_images(img1_path, img2_path):
         GE = cv2.pyrUp(gpB[i])
         L = cv2.subtract(gpB[i-1], GE)
         lpB.append(L)
+    # Add left and right halves
+    LS = []
+    for la, lb in zip(lpA, lpB):
+        cols, rows, ch = la.shape
+        ls = np.hstack((la[:, 0:int(cols/2)], lb[:, int(cols/2):]))
+        LS.append(ls)
