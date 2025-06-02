@@ -22,3 +22,15 @@ def blend_images(img1_path, img2_path):
     for _ in range(6):
         G = cv2.pyrDown(G)
         gpB.append(G)
+    # Generate Laplacian pyramids
+    lpA = [gpA[-1]]
+    for i in range(5, 0, -1):
+        GE = cv2.pyrUp(gpA[i])
+        L = cv2.subtract(gpA[i-1], GE)
+        lpA.append(L)
+
+    lpB = [gpB[-1]]
+    for i in range(5, 0, -1):
+        GE = cv2.pyrUp(gpB[i])
+        L = cv2.subtract(gpB[i-1], GE)
+        lpB.append(L)
