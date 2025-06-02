@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Image Blending</h2>
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image1" accept="image/*" required><br>
+    <input type="file" name="image2" accept="image/*" required><br>
+    <button type="submit">Blend Images</button>
+</form>
