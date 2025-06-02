@@ -6,3 +6,8 @@
     <input type="file" name="image2" accept="image/*" required><br>
     <button type="submit">Blend Images</button>
 </form>
+{% if img1 and img2 %}
+    <h3>Input Images:</h3>
+    <img src="{{ img1 }}"><br>
+    <img src="{{ img2 }}">
+{% endif %}
