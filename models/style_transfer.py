@@ -82,3 +82,32 @@ def get_model_and_losses(cnn, content_img, style_img):
             style_losses.append(style_loss)
 
     return model, style_losses, content_losses
+# Run style transfer
+def run_style_transfer(content_path, style_path, output_path):
+    content_img = image_loader(content_path)
+    style_img = image_loader(style_path)
+    input_img = content_img.clone()
+
+    cnn = models.vgg19(pretrained=True).to(device).eval()
+    model, style_losses, content_losses = get_model_and_losses(cnn, content_img, style_img)
+
+    optimizer = optim.LBFGS([input_img.requires_grad_()])
+    
+    run = [0]
+    while run[0] <= 300:
+        def closure():
+            optimizer.zero_grad()
+            model(input_img)
+            style_score = sum(sl.loss for sl in style_losses)
+            content_score = sum(cl.loss for cl in content_losses)
+            loss = style_score * 1000000 + content_score
+            loss.backward()
+            run[0] += 1
+            return loss
+        optimizer.step(closure)
+
+    output_image = input_img.cpu().clone().squeeze(0)
+    image = unloader(output_image)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    image.save(output_path)
+    return output_path
