@@ -13,3 +13,8 @@ loader = transforms.Compose([
 ])
 
 unloader = transforms.ToPILImage()
+
+def image_loader(image_name):
+    image = Image.open(image_name).convert('RGB')
+    image = loader(image).unsqueeze(0)
+    return image.to(device, torch.float)
