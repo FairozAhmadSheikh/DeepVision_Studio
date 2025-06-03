@@ -33,3 +33,52 @@ def gram_matrix(x):
     features = x.view(b * c, h * w)
     G = torch.mm(features, features.t())
     return G.div(b * c * h * w)
+class StyleLoss(nn.Module):
+    def __init__(self, target_feature):
+        super().__init__()
+        self.target = gram_matrix(target_feature).detach()
+
+    def forward(self, x):
+        G = gram_matrix(x)
+        self.loss = nn.functional.mse_loss(G, self.target)
+        return x
+
+# Build model with inserted loss layers
+def get_model_and_losses(cnn, content_img, style_img):
+    cnn = cnn.features.to(device).eval()
+    content_layers = ['conv_4']
+    style_layers = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
+
+    content_losses = []
+    style_losses = []
+
+    model = nn.Sequential()
+    i = 0
+    for layer in cnn.children():
+        if isinstance(layer, nn.Conv2d):
+            i += 1
+            name = f'conv_{i}'
+        elif isinstance(layer, nn.ReLU):
+            name = f'relu_{i}'
+            layer = nn.ReLU(inplace=False)
+        elif isinstance(layer, nn.MaxPool2d):
+            name = f'pool_{i}'
+        elif isinstance(layer, nn.BatchNorm2d):
+            name = f'bn_{i}'
+        else:
+            continue
+        model.add_module(name, layer)
+
+        if name in content_layers:
+            target = model(content_img).detach()
+            content_loss = ContentLoss(target)
+            model.add_module("content_loss_" + name, content_loss)
+            content_losses.append(content_loss)
+
+        if name in style_layers:
+            target_feature = model(style_img).detach()
+            style_loss = StyleLoss(target_feature)
+            model.add_module("style_loss_" + name, style_loss)
+            style_losses.append(style_loss)
+
+    return model, style_losses, content_losses
