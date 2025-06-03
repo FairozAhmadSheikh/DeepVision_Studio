@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Neural Style Transfer</h2>
+<form method="POST" enctype="multipart/form-data">
+    <label>Content Image:</label><br>
+    <input type="file" name="content" required><br>
+    <label>Style Image:</label><br>
+    <input type="file" name="style" required><br><br>
+    <button type="submit">Apply Style Transfer</button>
+</form>
