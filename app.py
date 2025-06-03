@@ -3,6 +3,7 @@ import os
 from werkzeug.utils import secure_filename
 from models.super_resolution import enhance_image
 from models.blending import blend_images
+from models.style_transfer import run_style_transfer
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -53,6 +54,25 @@ def blend():
 
         return render_template("blend.html", img1=path1, img2=path2, blended=blended_path)
     return render_template("blend.html")
+@app.route('/style-transfer', methods=['GET', 'POST'])
+def style_transfer():
+    if request.method == 'POST':
+        content = request.files.get('content')
+        style = request.files.get('style')
+        if not content or not style:
+            return "Please upload both content and style images."
+
+        content_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(content.filename))
+        style_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(style.filename))
+        content.save(content_path)
+        style.save(style_path)
+
+        styled_filename = f"styled_{os.path.basename(content_path)}"
+        output_path = os.path.join("static", "uploads", "styled", styled_filename)
+
+        result_path = run_style_transfer(content_path, style_path, output_path)
+        return render_template("style_transfer.html", content=content_path, style=style_path, styled=result_path)
+    return render_template("style_transfer.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
