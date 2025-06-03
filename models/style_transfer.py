@@ -6,3 +6,10 @@ from PIL import Image
 import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# Preprocessing and deprocessing
+loader = transforms.Compose([
+    transforms.Resize((512, 512)),
+    transforms.ToTensor()
+])
+
+unloader = transforms.ToPILImage()
