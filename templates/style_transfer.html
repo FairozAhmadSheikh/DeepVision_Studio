@@ -8,3 +8,14 @@
     <input type="file" name="style" required><br><br>
     <button type="submit">Apply Style Transfer</button>
 </form>
+{% if content and style %}
+    <h3>Inputs:</h3>
+    <img src="{{ content }}" width="300">
+    <img src="{{ style }}" width="300">
+{% endif %}
+
+{% if styled %}
+    <h3>Stylized Output:</h3>
+    <img src="{{ styled }}" width="512">
+{% endif %}
+{% endblock %}
