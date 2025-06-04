@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from models.super_resolution import enhance_image
 from models.blending import blend_images
 from models.style_transfer import run_style_transfer
+from models.denoising import denoise_image
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
