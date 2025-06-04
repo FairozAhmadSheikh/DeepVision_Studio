@@ -74,6 +74,20 @@ def style_transfer():
         result_path = run_style_transfer(content_path, style_path, output_path)
         return render_template("style_transfer.html", content=content_path, style=style_path, styled=result_path)
     return render_template("style_transfer.html")
+@app.route('/denoise', methods=['GET', 'POST'])
+def denoise():
+    if request.method == 'POST':
+        image = request.files.get('image')
+        if not image:
+            return "Please upload an image."
 
+        filename = secure_filename(image.filename)
+        input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(input_path)
+
+        output_path = denoise_image(input_path)
+        return render_template("denoise.html", original=input_path, denoised=output_path)
+
+    return render_template("denoise.html")
 if __name__ == '__main__':
     app.run(debug=True)
