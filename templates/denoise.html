@@ -9,3 +9,8 @@
     <h3>Original Image:</h3>
     <img src="{{ original }}" width="300">
 {% endif %}
+{% if denoised %}
+    <h3>Denoised Image:</h3>
+    <img src="{{ denoised }}" width="300">
+{% endif %}
+{% endblock %}
