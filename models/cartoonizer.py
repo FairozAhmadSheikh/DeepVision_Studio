@@ -21,3 +21,10 @@ def cartoonize_image(input_path):
     # Step 4: Combine edges with the color image
     edges_colored = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
     cartoon = cv2.bitwise_and(color, edges_colored)
+    # Save output
+    filename = f"cartoon_{os.path.basename(input_path)}"
+    output_path = os.path.join("static", "uploads", "cartoon", filename)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    cv2.imwrite(output_path, cartoon)
+
+    return output_path
