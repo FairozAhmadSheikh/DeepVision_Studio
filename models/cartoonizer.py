@@ -13,3 +13,11 @@ def cartoonize_image(input_path):
     # Step 2: Convert to grayscale and apply median blur
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.medianBlur(gray, 7)
+    
+    # Step 3: Detect edges
+    edges = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                   cv2.THRESH_BINARY, blockSize=9, C=2)
+
+    # Step 4: Combine edges with the color image
+    edges_colored = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    cartoon = cv2.bitwise_and(color, edges_colored)
