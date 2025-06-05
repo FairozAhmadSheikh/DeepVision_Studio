@@ -5,6 +5,7 @@ from models.super_resolution import enhance_image
 from models.blending import blend_images
 from models.style_transfer import run_style_transfer
 from models.denoising import denoise_image
+from models.cartoonizer import cartoonize_image
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -89,5 +90,20 @@ def denoise():
         return render_template("denoise.html", original=input_path, denoised=output_path)
 
     return render_template("denoise.html")
+@app.route('/cartoonize', methods=['GET', 'POST'])
+def cartoonize():
+    if request.method == 'POST':
+        image = request.files.get('image')
+        if not image:
+            return "Please upload an image."
+
+        filename = secure_filename(image.filename)
+        input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(input_path)
+
+        cartoon_path = cartoonize_image(input_path)
+        return render_template("cartoonize.html", original=input_path, cartoon=cartoon_path)
+
+    return render_template("cartoonize.html")
 if __name__ == '__main__':
     app.run(debug=True)
