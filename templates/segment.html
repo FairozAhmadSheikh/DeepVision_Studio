@@ -9,3 +9,9 @@
     <h3>Original Image:</h3>
     <img src="{{ original }}" width="300">
 {% endif %}
+
+{% if segmented %}
+    <h3>Segmented Output:</h3>
+    <img src="{{ segmented }}" width="300">
+{% endif %}
+{% endblock %}
