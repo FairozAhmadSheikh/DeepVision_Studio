@@ -6,6 +6,7 @@ from models.blending import blend_images
 from models.style_transfer import run_style_transfer
 from models.denoising import denoise_image
 from models.cartoonizer import cartoonize_image
+from models.segmenter import segment_image
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -105,5 +106,20 @@ def cartoonize():
         return render_template("cartoonize.html", original=input_path, cartoon=cartoon_path)
 
     return render_template("cartoonize.html")
+@app.route('/segment', methods=['GET', 'POST'])
+def segment():
+    if request.method == 'POST':
+        image = request.files.get('image')
+        if not image:
+            return "Please upload an image."
+
+        filename = secure_filename(image.filename)
+        input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(input_path)
+
+        segmented_path = segment_image(input_path)
+        return render_template("segment.html", original=input_path, segmented=segmented_path)
+
+    return render_template("segment.html")
 if __name__ == '__main__':
     app.run(debug=True)
