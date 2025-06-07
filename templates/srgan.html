@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>SRGAN Super Resolution</h2>
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required><br><br>
+    <button type="submit">Enhance Image</button>
+</form>
