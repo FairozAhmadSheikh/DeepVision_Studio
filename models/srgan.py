@@ -47,3 +47,27 @@ class UpsampleBlock(nn.Module):
 
     def forward(self, x):
         return self.block(x)
+# Load pre-trained generator
+def load_srgan_model():
+    model = Generator().to(device)
+    model.load_state_dict(torch.load("models/weights/SRGAN_Generator.pth", map_location=device))
+    model.eval()
+    return model
+
+# Enhance image
+def enhance_srgan(input_path):
+    model = load_srgan_model()
+
+    image = Image.open(input_path).convert("RGB")
+    lr = ToTensor()(image).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        sr = model(lr).squeeze(0).cpu()
+    sr_image = ToPILImage()(sr.clamp(0.0, 1.0))
+
+    filename = f"srgan_{os.path.basename(input_path)}"
+    output_path = os.path.join("static", "uploads", "srgan", filename)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    sr_image.save(output_path)
+
+    return output_path
