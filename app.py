@@ -7,6 +7,7 @@ from models.style_transfer import run_style_transfer
 from models.denoising import denoise_image
 from models.cartoonizer import cartoonize_image
 from models.segmenter import segment_image
+from models.srgan import enhance_srgan
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
