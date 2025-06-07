@@ -121,5 +121,20 @@ def segment():
         return render_template("segment.html", original=input_path, segmented=segmented_path)
 
     return render_template("segment.html")
+@app.route('/srgan', methods=['GET', 'POST'])
+def srgan():
+    if request.method == 'POST':
+        image = request.files.get('image')
+        if not image:
+            return "Please upload an image."
+
+        filename = secure_filename(image.filename)
+        input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(input_path)
+
+        output_path = enhance_srgan(input_path)
+        return render_template("srgan.html", original=input_path, enhanced=output_path)
+
+    return render_template("srgan.html")
 if __name__ == '__main__':
     app.run(debug=True)
