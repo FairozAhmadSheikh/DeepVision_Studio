@@ -36,3 +36,14 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         return x + self.block(x)
+class UpsampleBlock(nn.Module):
+    def __init__(self, channels):
+        super(UpsampleBlock, self).__init__()
+        self.block = nn.Sequential(
+            nn.Conv2d(channels, channels * 4, kernel_size=3, padding=1),
+            nn.PixelShuffle(2),
+            nn.PReLU()
+        )
+
+    def forward(self, x):
+        return self.block(x)
