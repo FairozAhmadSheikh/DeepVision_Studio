@@ -1,0 +1,11 @@
+import os
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
+import numpy as np
+from models.u2net_arch import U2NET  # Download this file separately (model architecture)
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+
