@@ -7,5 +7,10 @@ from models.u2net_arch import U2NET  # Download this file separately (model arch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-
+def load_u2net_model():
+    model = U2NET(3, 1)
+    model.load_state_dict(torch.load("models/weights/u2net.pth", map_location=device))
+    model.to(device)
+    model.eval()
+    return model
 
